@@ -2,12 +2,13 @@
 #include <string.h>
 #include <stdlib.h>
 #include "account.h"
+#include "protocol.h"
 
 void full(){
   printf("NO MEMORY!\n");
 }
 
-int is_empty(User *top){
+int is_empty_user_list(User *top){
   return (top == NULL);
 }
 
@@ -20,17 +21,18 @@ User* make_user(char* name, char* pass, int id){
 
   strcpy(user->name, name);
   strcpy(user->pass, pass);
-  user->status = 0;
+  user->state = AUTHENTICATE;
   user->id = id;
+  user->next = NULL;
   return user;
 }
 
-void add_to_head(User **top, User *new_user){
+void add_to_head_user_list(User **top, User *new_user){
   new_user->next = (*top);
   (*top) = new_user;
 }
 
-int size_of_list(User* top){
+int size_of_user_list(User* top){
   User* p;
   int size = 0;
   for (p = top; p != NULL; p = p->next){
@@ -39,15 +41,15 @@ int size_of_list(User* top){
   return size;
 }
 
-User* search(User* top, int id){
-  if (is_empty(top))
+User* search_user(User* top, char* name){
+  if (is_empty_user_list(top))
           return NULL;
 
      User* user;
      int kt;
 
      for (user = top; user != NULL; user = user->next)
-     if (user->id == id)
+     if (strcmp(user->name, name)==0)
      {
           kt=1;
           break;
@@ -68,7 +70,7 @@ User* load_data(char* file_name){
 
   while (fscanf(f, "%s", name)>0){
     fscanf(f, "%s", pass);
-    add_to_head(&list, make_user(name, pass, size_of_list(list)));
+    add_to_head_user_list(&list, make_user(name, pass, size_of_user_list(list)));
   }
   fclose(f);
   return list;
@@ -82,9 +84,9 @@ void show_list(User* top){
 }
 
 
-void free_list(User** top){
+void free_user_list(User** top){
   User *user;
-  while (!is_empty(*top)){
+  while (!is_empty_user_list(*top)){
       user=(*top);
       (*top)=user->next;
       free(user);
