@@ -4,7 +4,7 @@
 #include "play.h"
 
 
-int request_play(Protocol* protocol, User* top_user, Room** top_room){
+int allow_play(Protocol* protocol, User* top_user, Room** top_room){
   User* u;
   u = search_user(top_user, protocol->user_info.name);
   if (u == NULL){
@@ -42,7 +42,7 @@ int request_play(Protocol* protocol, User* top_user, Room** top_room){
 
 }
 
-int allow_play(int client, Protocol* protocol, int allow){
+int response_request_play(int client, Protocol* protocol, int allow){
   int bytes_sent;
   if (allow){
     protocol->state = READY;

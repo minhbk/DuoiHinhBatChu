@@ -4,12 +4,14 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <unistd.h>
+
 #include <string.h>
-#include "../lib/account.h"
-#include "../lib/protocol.h"
 #include <unistd.h>
 #include <time.h>
+
+#include "../lib/protocol.h"
+#include "../lib/account.h"
+#include "request.h"
 
 #define PORT 5502
 
@@ -18,6 +20,7 @@ int main(){
   char buff[1024];
   struct sockaddr_in server_addr;
   int bytes_sent,bytes_received, sin_size;
+  int state;
 
   client_sock=socket(AF_INET,SOCK_STREAM,0);
 
@@ -32,42 +35,23 @@ int main(){
     return 0;
   }
 
+  //khoi tao trang thai
+  state = AUTHENTICATE;
+
   User *user;
   user = (User*)malloc(sizeof(User));
-  strcpy(user->name, "minh");
-  strcpy(user->pass, "123");
-  user->state = AUTHENTICATE;
+  printf("Nhap username: "); gets(user->name);
+  printf("Nhap pass: "); gets(user->pass);
+  user->state = state;
   user->next = NULL;
 
   Protocol *protocol;
   protocol = (Protocol*)malloc(sizeof(Protocol));
 
 
-  do {
-    protocol->state = user->state;
-    strcpy(protocol->user_info.name, user->name);
-    strcpy(protocol->user_info.pass, user->pass);
-    protocol->user_info.state = user->state;
-    protocol->user_info.next = user->next;
-    protocol->message = WANT_TO_PLAY;
-
-    printf("%d\n", protocol->state);
-    printf("%d\n", sizeof(Protocol));
-    bytes_sent = send(client_sock, protocol, sizeof(Protocol), 0);
-    if(bytes_sent < 0){
-          printf("\nError!Cannot send data to sever!\n");
-          close(client_sock);
-          exit(-1);
-    }
-    bytes_received = recv(client_sock, protocol, sizeof(Protocol), 0);
-
-    if (protocol->message == ALLOW_PLAY){
-      printf("Duoc phep choi\n");
-    } else {
-      printf("Khong duoc phep\n");
-    }
-  } while (protocol->message != ALLOW_PLAY);
-
+  state = request_play(protocol, user, client_sock, state);
+  /* ready(protocol, user, client_sock, state); */
+  /* recv_question() */
 
 
   close(client_sock);

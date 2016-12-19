@@ -121,8 +121,8 @@ int main(){
           case UNAUTHENTICATE:
             //TODO
           case AUTHENTICATE:
-            if (request_play(protocol, list_user, &list_room)){
-              allow_play(clients[i], protocol, 1);
+            if (allow_play(protocol, list_user, &list_room)){
+              response_request_play(clients[i], protocol, 1);
               printf("Duoc phep!\n");
               //TODO gui loi
 
@@ -130,14 +130,14 @@ int main(){
               FD_CLR(clients[i],&sockfds);
               clients[i]=-1;
             } else {
-              allow_play(clients[i], protocol, 0);
+              response_request_play(clients[i], protocol, 0);
 
               printf("Khong duoc phep!\n");
               //TODO gui loi
             }
             break;
           case READY:
-            /* ready_status(protocol); */
+            /* show_question() */
             break;
           case PLAYING:
             //TODO
