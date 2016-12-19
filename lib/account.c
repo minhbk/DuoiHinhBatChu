@@ -93,3 +93,12 @@ void free_user_list(User** top){
   }
   (*top)=NULL;
 }
+
+
+void check_error(int bytes, int client_sock){
+  if(bytes < 0){
+        printf("\nOpss! Network has some error!\n");
+        close(client_sock);
+        exit(-1);
+  }
+}

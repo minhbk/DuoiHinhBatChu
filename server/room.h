@@ -4,8 +4,9 @@
 #include "../lib/account.h"
 
 typedef struct room{
-  User* user1;
-  User* user2;
+  User* user[2];
+  int score[2];
+  int question_number;
   int right_persion;
   struct room* next;
 } Room;
@@ -26,6 +27,7 @@ void del_room(Room** top, char *name);
 
 void free_room_list(Room** top);
 
-Room* in_room(Room* top, char* name);
+Room* is_first_user_in_room(Room* top, char* name);
 
+Room* in_room(Room* top, char* name);
 #endif

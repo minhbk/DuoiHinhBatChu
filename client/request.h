@@ -4,7 +4,6 @@
 #include "../lib/protocol.h"
 #include "../lib/account.h"
 
-void check_error(int bytes, int client_sock);
 
 void assign_user(Protocol* protocol, User* user, int state);
 

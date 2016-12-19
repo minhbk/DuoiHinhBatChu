@@ -13,7 +13,7 @@
 #include "../lib/account.h"
 #include "request.h"
 
-#define PORT 5502
+#define PORT 5501
 
 int main(){
   int client_sock;
@@ -50,8 +50,37 @@ int main(){
 
 
   state = request_play(protocol, user, client_sock, state);
-  /* ready(protocol, user, client_sock, state); */
+  ready(protocol, user, client_sock, state);
   /* recv_question() */
+  recv(client_sock, protocol, sizeof(Protocol), 0);
+  char sug[30];
+  int image_size;
+  strcpy(sug, protocol->question.suggestion);
+  image_size = protocol->question.image_size;
+  state = protocol->state;
+
+  protocol->state = state;
+  protocol->message = REQUEST_IMAGE;
+  send(client_sock, protocol, sizeof(Protocol), 0);
+
+
+
+  char file_name[30];
+  strcpy(file_name, user->name);
+  strcat(file_name, ".jpg");
+
+  FILE *image = fopen(file_name, "wb");
+  int remain = image_size;
+
+  while (remain > 0){
+    recv(client_sock, buff, 1024, 0);
+
+    remain -= bytes_received;
+
+    fwrite(buff, 1, 1024, image);
+
+  }
+
 
 
   close(client_sock);

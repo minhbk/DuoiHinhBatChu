@@ -34,6 +34,8 @@
 #define ALLOW_SIGOUT 219
 #define WANT_TO_DISCONNECT 220
 #define ALLOW_DISCONNECT 221
+#define REQUEST_IMAGE 222
+#define SEND_IMAGE 223
 
 typedef struct protocol{
   int state;

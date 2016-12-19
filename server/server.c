@@ -14,16 +14,9 @@
 #include "room.h"
 /* #include "question.h" */
 
-#define PORT 5502
+#define PORT 5501
 #define BACKLOG 20
 
-
-void check_file_exist(FILE *f){
-  if (!f){
-    printf("FILE NOT FOUND!\n");
-    exit(0);
-  }
-}
 
 int main(){
 
@@ -112,7 +105,10 @@ int main(){
         protocol = (Protocol*)malloc(sizeof(Protocol));
 
         bytes_received = recv(clients[i], protocol, sizeof(Protocol), 0);
-        puts("123");
+        check_error(bytes_received, clients[i]);
+        
+        printf("\n\nUser: %s\n", protocol->user_info.name);
+
         switch(protocol->state){
           case CONNECTED:
             //TODO
@@ -123,24 +119,31 @@ int main(){
           case AUTHENTICATE:
             if (allow_play(protocol, list_user, &list_room)){
               response_request_play(clients[i], protocol, 1);
-              printf("Duoc phep!\n");
+              printf("Allow play!\n");
               //TODO gui loi
 
-              close(clients[i]);
-              FD_CLR(clients[i],&sockfds);
-              clients[i]=-1;
             } else {
               response_request_play(clients[i], protocol, 0);
 
-              printf("Khong duoc phep!\n");
+              printf("Deny play!\n");
               //TODO gui loi
             }
             break;
           case READY:
-            /* show_question() */
+            puts("Send question");
+            show_question(protocol, list_user, list_room, clients[i]);
+            puts("Complete send question");
+
             break;
           case PLAYING:
+            if (protocol->message == REQUEST_IMAGE){
+              send_image(protocol, list_user, list_room, clients[i]);
+
+            }
             //TODO
+            close(clients[i]);
+            FD_CLR(clients[i],&sockfds);
+            clients[i]=-1;
             break;
         }
 

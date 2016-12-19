@@ -5,7 +5,7 @@
 int room_full(Room* room){
   if (room == NULL){
     return 1;
-  } else if (room->user1 && room->user2){
+  } else if (room->user[0] && room->user[1]){
     return 1;
   } else {
     return 0;
@@ -13,10 +13,10 @@ int room_full(Room* room){
 }
 
 void join_room(Room* room, User* user){
-  if (room->user1 == NULL){
-    room->user1 = user;
-  } else if (room->user2 == NULL){
-    room->user2 = user;
+  if (room->user[0] == NULL){
+    room->user[0] = user;
+  } else if (room->user[1] == NULL){
+    room->user[1] = user;
   }
 }
 
@@ -26,8 +26,12 @@ int is_empty_room_list(Room* top){
 
 Room* make_room(){
   Room* room = (Room*)malloc(sizeof(Room));
-  room->user1 = NULL;
-  room->user2 = NULL;
+  room->user[0] = NULL;
+  room->user[1] = NULL;
+  room->score[0] = 0;
+  room->score[1] = 0;
+  room->question_number = 1;
+  room->right_persion = -1;
   room->next = NULL;
   return room;
 }
@@ -39,15 +43,17 @@ void add_to_head_room_list(Room** top, Room* new_room){
 }
 
 int room_has_name(Room* room, char* name){
-  if (room->user1 != NULL &&
-      room->user2 != NULL &&
-      (strcmp(room->user1->name, name) == 0 ||
-       strcmp(room->user2->name, name) == 0)){
+  if (room->user[0] != NULL &&
+      room->user[1] != NULL &&
+      (strcmp(room->user[0]->name, name) == 0 ||
+       strcmp(room->user[1]->name, name) == 0)){
     return 1;
   } else {
     return 0;
   }
 }
+
+//chi del dc room khi room do full
 void del_room(Room** top, char *name){
   Room* p;
   if (room_has_name(*top, name)){
@@ -97,13 +103,25 @@ void free_room_list(Room** top){
 /* } */
 
 
-Room* in_room(Room* top, char* name){
+Room* is_first_user_in_room(Room* top, char* name){
   Room* p;
   for (p=top; p!=NULL; p=p->next){
-    if (strcmp(p->user1->name, name)==0){
+    if (strcmp(p->user[0]->name, name)==0){
       return p;
-    }
+    } 
   }
 
   return NULL;
 }
+
+Room* in_room(Room* top, char* name){
+  Room* p;
+  for (p=top; p!=NULL; p=p->next){
+    if (strcmp(p->user[0]->name, name)==0){
+      return p;
+    } else if (strcmp(p->user[1]->name, name)==0){
+      return p;
+    }
+  }
+  return NULL;
+} 

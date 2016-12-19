@@ -3,13 +3,6 @@
 #include <string.h>
 #include "request.h"
 
-void check_error(int bytes, int client_sock){
-  if(bytes < 0){
-        printf("\nOpss! Network has some error!\n");
-        close(client_sock);
-        exit(-1);
-  }
-}
 
 
 void assign_user(Protocol* protocol, User* user,int state){
@@ -35,7 +28,7 @@ int request_play(Protocol* protocol, User* user, int client_sock, int state){
 
     if (protocol->message == ALLOW_PLAY){
       printf("Duoc phep choi\n");
-      return protocol->message;
+      return protocol->state;
     } else {
       printf("Khong duoc phep\n");
     }
@@ -47,6 +40,8 @@ void ready(Protocol* protocol, User* user, int client_sock, int state){
   int bytes_sent;
   assign_user(protocol, user, state);
   protocol->message = I_AM_READY;
+  printf("%d\n", protocol->message);
+  printf("%d\n", protocol->state);
   bytes_sent = send(client_sock, protocol, sizeof(Protocol), 0);
   check_error(bytes_sent, client_sock);
 }

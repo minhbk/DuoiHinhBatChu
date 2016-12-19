@@ -19,5 +19,5 @@ User* search_user(User *top, char* name);
 User* load_data(char* file_name);
 void show_list(User* top);
 void free_user_list(User** top);
-
+void check_error(int bytes, int client_sock);
 #endif
