@@ -13,7 +13,7 @@
 #include "../lib/account.h"
 #include "request.h"
 
-#define PORT 5501
+#define PORT 5502
 
 int main(){
   int client_sock;
@@ -71,15 +71,18 @@ int main(){
 
   FILE *image = fopen(file_name, "wb");
   int remain = image_size;
+  puts("Bat dau nhan");
 
   while (remain > 0){
-    recv(client_sock, buff, 1024, 0);
+    bytes_received = recv(client_sock, buff, 1024, 0);
 
-    remain -= bytes_received;
+    remain = remain - bytes_received;
 
     fwrite(buff, 1, 1024, image);
 
   }
+  fclose(image);
+  puts("Xong nhan anh");
 
 
 

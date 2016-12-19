@@ -159,10 +159,6 @@ void send_image(Protocol* protocol, User* top_user, Room* top_room, int client){
   FILE *ques_image = fopen(ques_image_name, "rb");
   check_file_exist(ques_image);
 
-  fseek(ques_image, 0, SEEK_END);
-  int image_size = ftell(ques_image);
-
-
   while (fread(buff, 1, 1024, ques_image) != 0){
     bytes_sent = send(client, buff, 1024, 0);
     check_error(bytes_sent, client);

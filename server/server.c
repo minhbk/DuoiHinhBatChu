@@ -14,7 +14,7 @@
 #include "room.h"
 /* #include "question.h" */
 
-#define PORT 5501
+#define PORT 5502
 #define BACKLOG 20
 
 
@@ -137,7 +137,9 @@ int main(){
             break;
           case PLAYING:
             if (protocol->message == REQUEST_IMAGE){
+              puts("gui anh");
               send_image(protocol, list_user, list_room, clients[i]);
+              puts("xong gui anh");
 
             }
             //TODO
