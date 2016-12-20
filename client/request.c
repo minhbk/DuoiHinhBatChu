@@ -59,12 +59,16 @@ int request_signup(Protocol* protocol, User* user, int client_sock, int state){
   check_error(bytes_received, client_sock);
 
   return protocol->message;
+  if (protocol->message == DONE_SIGUP){
+    return 1;
+  } else if (protocol->message == FAIL_SIGUP){
+    return 0;
+  }
 }
 
 
 int request_sign_in(Protocol* protocol, User* user, int client_sock, int state){
 
-  puts("abc");
   int bytes_sent, bytes_received;
   assign_user(protocol, user, state);
   protocol->state = state;
@@ -75,6 +79,10 @@ int request_sign_in(Protocol* protocol, User* user, int client_sock, int state){
   bytes_received = recv(client_sock, protocol, sizeof(Protocol), 0);
   check_error(bytes_received, client_sock);
 
-  puts("tttttt");
-  return protocol->message;
+  puts("Complete request sign in");
+  if (protocol->message == FAIL_SIGIN){
+    return 0;
+  } else if (protocol->message == DONE_SIGIN){
+    return 1;
+  }
 }

@@ -197,7 +197,9 @@ void do_sign_in(Protocol* protocol, User* top_user, int client){
   int bytes_sent;
   User* u;
   u = search_user(top_user, protocol->user_info.name);
-  if (u == NULL || (strcmp(u->pass, protocol->user_info.pass)!=0)){
+  if (u == NULL || 
+      (strcmp(u->pass, protocol->user_info.pass)!=0) || 
+      (u->state != protocol->state)){
     protocol->state = CONNECTED;
     protocol->message = FAIL_SIGIN;
     bytes_sent = send(client, protocol, sizeof(Protocol), 0);

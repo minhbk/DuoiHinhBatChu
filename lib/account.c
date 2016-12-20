@@ -21,7 +21,7 @@ User* make_user(char* name, char* pass){
 
   strcpy(user->name, name);
   strcpy(user->pass, pass);
-  user->state = AUTHENTICATE;
+  user->state = CONNECTED;
   user->next = NULL;
   return user;
 }
