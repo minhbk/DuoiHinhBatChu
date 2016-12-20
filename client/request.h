@@ -16,4 +16,10 @@ int request_signup(Protocol* protocol, User* user, int client_sock, int state);
 int request_sign_in(Protocol* protocol, User* user, int client_sock, int state);  
 
 void recv_image(char* image_name, int image_size, int client_sock);
+
+void send_answer(Protocol* protocol, User* user, int client_sock, int state, char* answer);
+
+void recv_result(Protocol* protocol, User* user, int client_sock);
+
+void request_question(Protocol* protocol, User* user, int client_sock, int state);
 #endif

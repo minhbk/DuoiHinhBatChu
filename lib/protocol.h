@@ -36,12 +36,15 @@
 #define ALLOW_DISCONNECT 221
 #define REQUEST_IMAGE 222
 #define SEND_IMAGE 223
+#define REQUEST_QUESTION 224
+#define NOT_SHOW_QUESTION 225
 
 typedef struct protocol{
   int state;
   User user_info;
   Question question;
-  int score;
+  int your_score;
+  int competitor_score;
   char answer[20];
   int message;
 } Protocol;

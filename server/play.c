@@ -64,6 +64,39 @@ void response_request_play(int client, Protocol* protocol, int allow){
 }
 
 
+int before_show_question(Protocol* protocol, User* top_user, Room* top_room, int client){
+
+  User* u;
+  u = search_user(top_user, protocol->user_info.name);
+  if (u == NULL){
+    return 0;
+  }
+  if (u->state != protocol->state){
+    return 0;
+  }
+
+  Room* room;
+  room = in_room(top_room, u->name);
+  if (room == NULL){
+    return 0;
+  }
+
+  if (room->question_number > TOTAL_QUESTION){
+    return 0;
+    //thong bao thang thua
+  }
+
+  int number, position;
+  number = room->question_number;
+  position = position_in_room(room, u->name);
+  if (room->user_answersed[position][number]){
+    not_show_question(protocol, client);
+    return 0;
+  }
+
+  return 1;
+
+}
 
 void show_question(Protocol* protocol, User* top_user, Room* top_room, int client){
 
@@ -82,8 +115,13 @@ void show_question(Protocol* protocol, User* top_user, Room* top_room, int clien
     return 0;
   }
 
+  int position;
+  position = position_in_room(room, u->name);
   protocol->state = PLAYING;
   protocol->message = QUESTION;
+  protocol->question.number = room->question_number;
+  protocol->your_score = room->score[position];
+  protocol->competitor_score = room->score[!position];
 
   char ques_file_name[30];
   char sug[30];
@@ -212,4 +250,84 @@ void do_sign_in(Protocol* protocol, User* top_user, int client){
   bytes_sent = send(client, protocol, sizeof(Protocol), 0);
   check_error(bytes_sent, client);
   puts("xong dang nhap");
+}
+
+
+void check_answer(Protocol* protocol, User* top_user, Room* top_room, int client){
+
+  User* u;
+  u = search_user(top_user, protocol->user_info.name);
+  if (u == NULL){
+    return 0;
+  }
+  if (u->state != protocol->state){
+    return 0;
+  }
+
+  Room* room;
+  room = in_room(top_room, u->name);
+  if (room == NULL){
+    return 0;
+  }
+
+  char ques_file[30];
+  char s[30];
+  int bytes_sent;
+  int number, position;
+  char answer[30];
+
+  number = room->question_number;
+  position = position_in_room(room, u->name);
+
+  if (room->user_answersed[position][number]){
+    return 0;
+  }
+
+
+  strcpy(s, "");
+  strcat(s, "question/");
+
+  sprintf(ques_file, "%d", number);
+  strcat(ques_file, ".dat");
+  strcat(s, ques_file);
+  strcpy(ques_file, s);
+
+  FILE *f = fopen(ques_file, "r");
+  check_file_exist(f);
+
+
+  fscanf(f, "%s", answer);
+  fscanf(f, "%s", answer);
+
+  if (strcmp(answer, protocol->answer)!=0){
+    protocol->message = FALSE;
+  } else {
+    if (room->right_persion[number]!=-1){
+      protocol->message = FALSE;
+    } else {
+      room->score[position] += SCORE_PER_QUESTION;
+      protocol->message = TRUE;
+      room->right_persion[number] = position;
+    }
+  }
+
+  room->user_answersed[position][number] = 1;
+
+  if (persion_answ_count(room, number) == 2){
+    room->question_number++;
+  }
+  protocol->state = PLAYING;
+
+  bytes_sent = send(client, protocol, sizeof(Protocol), 0);
+  check_error(bytes_sent, client);
+}
+
+
+void not_show_question(Protocol* protocol, int client){
+  protocol->state = PLAYING;
+  protocol->message = NOT_SHOW_QUESTION;
+
+  int bytes_sent;
+  bytes_sent = send(client, protocol, sizeof(Protocol), 0);
+  check_error(bytes_sent, client);
 }

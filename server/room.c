@@ -31,8 +31,15 @@ Room* make_room(){
   room->score[0] = 0;
   room->score[1] = 0;
   room->question_number = 1;
-  room->right_persion = -1;
   room->next = NULL;
+
+  int i;
+  for (i=0;i<30;i++){
+    room->right_persion[i] = -1;
+    /* room->ans_per_count = 0; */
+    room->user_answersed[0][i] = 0;
+    room->user_answersed[1][i] = 0;
+  }
   return room;
 }
 
@@ -125,3 +132,29 @@ Room* in_room(Room* top, char* name){
   }
   return NULL;
 } 
+
+
+int position_in_room(Room* room, char* name){
+  int i;
+  for (i=0; i<=1;i++){
+    if (strcmp(room->user[i]->name, name)==0){
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+
+int persion_answ_count(Room* room, int ques_num){
+  int count;
+  count = 0;
+  if (room->user_answersed[0][ques_num]){
+    count++;
+  }
+  if (room->user_answersed[1][ques_num]){
+    count++;
+  }
+
+  return count;
+}

@@ -104,3 +104,38 @@ void recv_image(char* image_name, int image_size, int client_sock){
   fclose(image);
   puts("Xong nhan anh");
 }
+
+
+void send_answer(Protocol* protocol, User* user, int client_sock, int state, char* answer){
+
+  int bytes_sent;
+  assign_user(protocol, user, state);
+  protocol->state = state;
+  protocol->message = ANSWER;
+  strcpy(protocol->answer, answer);
+
+  bytes_sent = send(client_sock, protocol, sizeof(Protocol), 0);
+  check_error(bytes_sent, client_sock);
+}
+
+void recv_result(Protocol* protocol, User* user, int client_sock){
+  int bytes_received = recv(client_sock, protocol, sizeof(Protocol), 0);
+  check_error(bytes_received, client_sock);
+  if (protocol->message == TRUE){
+    puts("Ban da tra loi dung va nhanh nhat");
+  } else if (protocol->message == FALSE){
+    puts("Ban tra loi sai hoac cham hon");
+  }
+}
+
+
+void request_question(Protocol* protocol, User* user, int client_sock, int state){
+
+  int bytes_sent;
+  assign_user(protocol, user, state);
+  protocol->state = state;
+  protocol->message = REQUEST_QUESTION;
+
+  bytes_sent = send(client_sock, protocol, sizeof(Protocol), 0);
+  check_error(bytes_sent, client_sock);
+}

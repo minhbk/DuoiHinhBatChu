@@ -14,7 +14,7 @@
 #include "room.h"
 /* #include "question.h" */
 
-#define PORT 5503
+#define PORT 5501
 #define BACKLOG 20
 
 
@@ -140,12 +140,20 @@ int main(){
               puts("gui anh");
               send_image(protocol, list_user, list_room, clients[i]);
               puts("xong gui anh");
-
+            } else if (protocol->message == ANSWER){
+              puts("check tra loi");
+              check_answer(protocol, list_user, list_room, clients[i]);
+              puts("check xong");
+            } else if (protocol->message == REQUEST_QUESTION){
+              puts("Send question");
+              if (before_show_question(protocol, list_user, list_room, clients[i])){
+                show_question(protocol, list_user, list_room, clients[i]);
+              }
+              puts("Complete send question");
             }
-            //TODO
-            close(clients[i]);
-            FD_CLR(clients[i],&sockfds);
-            clients[i]=-1;
+            /* close(clients[i]); */
+            /* FD_CLR(clients[i],&sockfds); */
+            /* clients[i]=-1; */
             break;
         }
 
