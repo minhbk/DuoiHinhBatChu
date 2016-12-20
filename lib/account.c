@@ -75,17 +75,15 @@ User* load_data(char* file_name){
   return list;
 }
 
-void save_user_list(User* user_list){
+void save_user_list(User* user_list, char* file_name){
   FILE *f = fopen(file_name, "w");
-  char name[20];
-  char pass[20];
-  User* list = NULL;
   User* p;
-
-  while (fscanf(f, "%s", name)>0){
-    fscanf(f, "%s", pass);
-    add_to_head_user_list(&list, make_user(name, pass ));
+  for (p=user_list; p!=NULL; p=p->next){
+    puts(p->name);
+    puts(p->pass);
+    fprintf(f, "%s\t%s\n", p->name, p->pass);
   }
+
   fclose(f);
 
 }

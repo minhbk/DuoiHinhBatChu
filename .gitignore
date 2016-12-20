@@ -1,5 +1,7 @@
 *~
 *.o
 tags
+client/client
+server/server
 
 
