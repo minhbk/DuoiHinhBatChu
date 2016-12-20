@@ -1,6 +1,8 @@
 #ifndef account_h
 #define account_h
 
+#define account_file "account.txt"
+
 
 typedef struct user{
   char name[20];
@@ -12,7 +14,7 @@ typedef struct user{
 
 void full();
 int is_empty_user_list(User *top);
-User* make_user(char* name, char* pass, int id);
+User* make_user(char* name, char* pass);
 void add_to_head_user_list(User **top, User *new_user);
 int size_of_user_list(User *top);
 User* search_user(User *top, char* name);

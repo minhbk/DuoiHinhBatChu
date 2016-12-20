@@ -166,3 +166,47 @@ void send_image(Protocol* protocol, User* top_user, Room* top_room, int client){
   
   fclose(ques_image);
 }
+
+
+void do_sign_up(Protocol* protocol, User** top_user, int client){
+
+  puts("Dang ki");
+  int bytes_sent;
+  User* u;
+  u = search_user(*top_user, protocol->user_info.name);
+  if (u != NULL){
+    protocol->message = FAIL_SIGIN;
+    bytes_sent = send(client, protocol, sizeof(Protocol), 0);
+    check_error(bytes_sent, client);
+    return 0;
+  }
+
+  add_to_head_user_list(top_user, make_user(protocol->user_info.name, protocol->user_info.pass));
+
+  protocol->message = DONE_SIGUP;
+  bytes_sent = send(client, protocol, sizeof(Protocol), 0);
+  check_error(bytes_sent, client);
+  puts("Xong dk");
+
+}
+
+void do_sign_in(Protocol* protocol, User* top_user, int client){
+
+  puts("Dang nhap");
+  int bytes_sent;
+  User* u;
+  u = search_user(top_user, protocol->user_info.name);
+  if (u == NULL){
+    protocol->state = CONNECTED;
+    protocol->message = FAIL_SIGIN;
+    bytes_sent = send(client, protocol, sizeof(Protocol), 0);
+    check_error(bytes_sent, client);
+    return 0;
+  }
+  u->state = AUTHENTICATE;
+  protocol->state = AUTHENTICATE;
+  protocol->message = DONE_SIGIN;
+  bytes_sent = send(client, protocol, sizeof(Protocol), 0);
+  check_error(bytes_sent, client);
+  puts("xong dang nhap");
+}

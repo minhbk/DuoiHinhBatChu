@@ -13,7 +13,7 @@
 #include "../lib/account.h"
 #include "request.h"
 
-#define PORT 5502
+#define PORT 5503
 
 int main(){
   int client_sock;
@@ -36,7 +36,7 @@ int main(){
   }
 
   //khoi tao trang thai
-  state = AUTHENTICATE;
+  state = CONNECTED;
 
   User *user;
   user = (User*)malloc(sizeof(User));
@@ -48,43 +48,68 @@ int main(){
   Protocol *protocol;
   protocol = (Protocol*)malloc(sizeof(Protocol));
 
+  int choice;
+  do{
+    printf("Menu\n");
+    printf("1. Dang ki");
+    printf("2. Dang nhap");
+    scanf("%d", &choice);
+    switch(choice){
+      case 1:
+        if (request_signup(protocol, user, client_sock, state) == DONE_SIGUP){
+          puts("Dang ki thang cong");
+        } else {
+          puts("Dang ki loi");
+        }
+        break;
+      case 2:
 
-  state = request_play(protocol, user, client_sock, state);
-  ready(protocol, user, client_sock, state);
-  /* recv_question() */
-  recv(client_sock, protocol, sizeof(Protocol), 0);
-  char sug[30];
-  int image_size;
-  strcpy(sug, protocol->question.suggestion);
-  image_size = protocol->question.image_size;
-  state = protocol->state;
+        puts("Bat dau dang nhap");
+        if (request_sign_in(protocol, user, client_sock, state)== FAIL_SIGIN){
+          puts("SIGIN loi");
+          break;
+        }
+      
+        state = AUTHENTICATE;
+      state = request_play(protocol, user, client_sock, state);
+      ready(protocol, user, client_sock, state);
+      /* recv_question() */
+      recv(client_sock, protocol, sizeof(Protocol), 0);
+      char sug[30];
+      int image_size;
+      strcpy(sug, protocol->question.suggestion);
+      image_size = protocol->question.image_size;
+      state = protocol->state;
 
-  protocol->state = state;
-  protocol->message = REQUEST_IMAGE;
-  send(client_sock, protocol, sizeof(Protocol), 0);
-
-
-
-  char file_name[30];
-  strcpy(file_name, user->name);
-  strcat(file_name, ".jpg");
-
-  FILE *image = fopen(file_name, "wb");
-  int remain = image_size;
-  puts("Bat dau nhan");
-
-  while (remain > 0){
-    bytes_received = recv(client_sock, buff, 1024, 0);
-
-    remain = remain - bytes_received;
-
-    fwrite(buff, 1, 1024, image);
-
-  }
-  fclose(image);
-  puts("Xong nhan anh");
+      protocol->state = state;
+      protocol->message = REQUEST_IMAGE;
+      send(client_sock, protocol, sizeof(Protocol), 0);
 
 
+
+      char file_name[30];
+      strcpy(file_name, user->name);
+      strcat(file_name, ".jpg");
+
+      FILE *image = fopen(file_name, "wb");
+      int remain = image_size;
+      puts("Bat dau nhan");
+
+      while (remain > 0){
+        bytes_received = recv(client_sock, buff, 1024, 0);
+
+        remain = remain - bytes_received;
+
+        fwrite(buff, 1, 1024, image);
+
+      }
+      fclose(image);
+      puts("Xong nhan anh");
+      exit(0);
+      break;
+
+    }
+  } while (choice!=3);
 
   close(client_sock);
   return 0;

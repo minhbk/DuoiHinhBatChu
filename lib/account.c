@@ -12,7 +12,7 @@ int is_empty_user_list(User *top){
   return (top == NULL);
 }
 
-User* make_user(char* name, char* pass, int id){
+User* make_user(char* name, char* pass){
   User* user = (User*)malloc(sizeof(User));
   if (user == NULL){
     full();
@@ -22,7 +22,6 @@ User* make_user(char* name, char* pass, int id){
   strcpy(user->name, name);
   strcpy(user->pass, pass);
   user->state = AUTHENTICATE;
-  user->id = id;
   user->next = NULL;
   return user;
 }
@@ -70,16 +69,31 @@ User* load_data(char* file_name){
 
   while (fscanf(f, "%s", name)>0){
     fscanf(f, "%s", pass);
-    add_to_head_user_list(&list, make_user(name, pass, size_of_user_list(list)));
+    add_to_head_user_list(&list, make_user(name, pass ));
   }
   fclose(f);
   return list;
 }
 
+void save_user_list(User* user_list){
+  FILE *f = fopen(file_name, "w");
+  char name[20];
+  char pass[20];
+  User* list = NULL;
+  User* p;
+
+  while (fscanf(f, "%s", name)>0){
+    fscanf(f, "%s", pass);
+    add_to_head_user_list(&list, make_user(name, pass ));
+  }
+  fclose(f);
+
+}
+
 void show_list(User* top){
   User* p;
   for(p=top; p!=NULL; p=p->next){
-    printf("%s - %s - %d\n", p->name, p->pass, p->id);
+    printf("%s - %s - %d\n", p->name, p->pass);
   }
 }
 

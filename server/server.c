@@ -14,14 +14,14 @@
 #include "room.h"
 /* #include "question.h" */
 
-#define PORT 5502
+#define PORT 5503
 #define BACKLOG 20
 
 
 int main(){
 
   User* list_user;
-  list_user = load_data("account.txt");
+  list_user = load_data(account_file);
   Room* list_room; 
   list_room = NULL;
 
@@ -111,22 +111,22 @@ int main(){
 
         switch(protocol->state){
           case CONNECTED:
-            //TODO
-          case SIGUP:
-            //TODO
-          case UNAUTHENTICATE:
-            //TODO
+            if (protocol->message == WANT_TO_SIGUP){
+              do_sign_up(protocol, &list_user, clients[i]);
+            } else if (protocol->message == WANT_TO_SIGIN){
+              do_sign_in(protocol, list_user, clients[i]);
+            }
+            break;
+
           case AUTHENTICATE:
             if (allow_play(protocol, list_user, &list_room)){
               response_request_play(clients[i], protocol, 1);
               printf("Allow play!\n");
-              //TODO gui loi
 
             } else {
               response_request_play(clients[i], protocol, 0);
 
               printf("Deny play!\n");
-              //TODO gui loi
             }
             break;
           case READY:

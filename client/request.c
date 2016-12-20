@@ -45,3 +45,36 @@ void ready(Protocol* protocol, User* user, int client_sock, int state){
   bytes_sent = send(client_sock, protocol, sizeof(Protocol), 0);
   check_error(bytes_sent, client_sock);
 }
+
+
+int request_signup(Protocol* protocol, User* user, int client_sock, int state){
+  int bytes_sent, bytes_received;
+  assign_user(protocol, user, state);
+  protocol->state = state;
+  protocol->message = WANT_TO_SIGUP;
+  bytes_sent = send(client_sock, protocol, sizeof(Protocol), 0);
+  check_error(bytes_sent, client_sock);
+
+  bytes_received = recv(client_sock, protocol, sizeof(Protocol), 0);
+  check_error(bytes_received, client_sock);
+
+  return protocol->message;
+}
+
+
+int request_sign_in(Protocol* protocol, User* user, int client_sock, int state){
+
+  puts("abc");
+  int bytes_sent, bytes_received;
+  assign_user(protocol, user, state);
+  protocol->state = state;
+  protocol->message = WANT_TO_SIGIN;
+  bytes_sent = send(client_sock, protocol, sizeof(Protocol), 0);
+  check_error(bytes_sent, client_sock);
+
+  bytes_received = recv(client_sock, protocol, sizeof(Protocol), 0);
+  check_error(bytes_received, client_sock);
+
+  puts("tttttt");
+  return protocol->message;
+}

@@ -8,7 +8,10 @@
 void check_file_exist(FILE *f);
 
 int allow_play(Protocol* protocol, User* top_user, Room** top_room);
-// void ready_status(Protocol* protocol);
+
+void do_sign_up(Protocol* protocol, User** top_user, int client);
+
+void do_sign_in(Protocol* protocol, User* top_user, int client);
 
 void response_request_play(int client, Protocol* protocol, int allow);
 
