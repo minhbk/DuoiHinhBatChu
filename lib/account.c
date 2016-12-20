@@ -79,8 +79,6 @@ void save_user_list(User* user_list, char* file_name){
   FILE *f = fopen(file_name, "w");
   User* p;
   for (p=user_list; p!=NULL; p=p->next){
-    puts(p->name);
-    puts(p->pass);
     fprintf(f, "%s\t%s\n", p->name, p->pass);
   }
 

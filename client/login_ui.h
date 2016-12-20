@@ -8,7 +8,6 @@
 #include "global_variable.h"
 
 //click Dang nhap
-int check=0;
 static void on_button_signin_clicked(GtkWidget *widget,gpointer *entry)
 {
 	gchar *str;
@@ -16,8 +15,6 @@ static void on_button_signin_clicked(GtkWidget *widget,gpointer *entry)
   GtkWidget *entry_pass;
   entry_tk=entry[0];
   entry_pass=entry[1];
-  puts(gtk_entry_get_text(GTK_ENTRY(entry_tk)));
-  puts(gtk_entry_get_text(GTK_ENTRY(entry_pass)));
 
 
   strcpy(user->name, gtk_entry_get_text(GTK_ENTRY(entry_tk)));
@@ -26,11 +23,13 @@ static void on_button_signin_clicked(GtkWidget *widget,gpointer *entry)
   user->next = NULL;
 
 
-  puts("Bat dau dang nhap");
   if (request_sign_in(protocol, user, client_sock, state)){
+    puts("Dang nhap thanh cong");
+    state = protocol->state;
+    gtk_main_quit();
     main_play();
   } else {
-    puts("Error signin");
+    puts("Loi dang nhap");
     // show_error();
   }
 
@@ -78,8 +77,8 @@ void create_login_ui(int argc,char *argv[])
 	GtkWidget *fixed;
 	GtkWidget *statusbar;
 
-	GtkWidget *entry_tk;
-	GtkWidget *entry_pass;
+	// GtkWidget *entry_tk;
+	// GtkWidget *entry_pass;
   GtkWidget *user_infor[2];
 
 

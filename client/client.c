@@ -7,7 +7,6 @@
 
 #include <string.h>
 #include <unistd.h>
-#include <time.h>
 
 #include "../lib/protocol.h"
 #include "../lib/account.h"

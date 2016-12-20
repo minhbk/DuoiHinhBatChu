@@ -3,36 +3,62 @@
 #include <stdio.h>
 #include <string.h>
 
-int a=0,b=0;
-void on_button_signup_clicked_pass(GtkWidget *widget,gpointer window)
-{
+// void on_button_signup_clicked_pass(GtkWidget *widget,gpointer window)
+// {
 	
-			if(a==0){FILE *f1;
-			f1=fopen("password.txt","a+");
-		fputs(gtk_entry_get_text(GTK_ENTRY(window)),f1);
-		fputs("\n",f1);
-		//g_print("123");
-    //
-		fclose(f1);}
+//       if(a==0){FILE *f1;
+//       f1=fopen("password.txt","a+");
+//     fputs(gtk_entry_get_text(GTK_ENTRY(window)),f1);
+//     fputs("\n",f1);
+//     //g_print("123");
+//     //
+//     fclose(f1);}
 
 	
-}
+// }
 
- void on_button_signup_clicked_tk(GtkWidget *widget, gpointer window)
+ void on_button_signup_clicked_tk(GtkWidget *widget, gpointer *entry)
 {
-	gchar *str;
-	if(check_username(gtk_entry_get_text(GTK_ENTRY(window))))
-		{g_print("Tài khoản đã tồn tại\n");a=1;}
+
+  GtkWidget *entry_tk = entry[0];
+  GtkWidget *entry_pass = entry[1];
+  GtkWidget *entry_pass_conf = entry[2];
+
+  char name[30];
+  char pass[30];
+  char pass_conf[30];
+  strcpy(name, gtk_entry_get_text(GTK_ENTRY(entry_tk)));
+  strcpy(pass, gtk_entry_get_text(GTK_ENTRY(entry_pass)));
+  strcpy(pass_conf, gtk_entry_get_text(GTK_ENTRY(entry_pass_conf)));
+
+  if (strcmp(pass, pass_conf)!=0){
+    puts("Loi! Mat khau khong trung nhau!");
+  } else {
+    strcpy(user->name, name);
+    strcpy(user->pass, pass);
+    user->state = state;
+    user->next = NULL;
+
+    if (request_signup(protocol, user, client_sock, state)){
+      puts("Dang ki thanh cong!");
+    } else {
+      puts("Tai khoan da ton tai!");
+    }
+  }
+
+	// gchar *str;
+	// if(check_username(gtk_entry_get_text(GTK_ENTRY(window))))
+	//   {g_print("Tài khoản đã tồn tại\n");a=1;}
 	
-	else {
-			FILE *f1;
-			f1=fopen("password.txt","a+");
-		fputs(gtk_entry_get_text(GTK_ENTRY(window)),f1);
-		fputs("\t",f1);
-    a=0;
-		//g_print("456");
-		fclose(f1);
-	}
+	// else {
+	//     FILE *f1;
+	//     f1=fopen("password.txt","a+");
+	//   fputs(gtk_entry_get_text(GTK_ENTRY(window)),f1);
+	//   fputs("\t",f1);
+  //   a=0;
+	//   //g_print("456");
+	//   fclose(f1);
+	// }
 }
 
 
@@ -77,9 +103,10 @@ void signup(int argc, char *argv[])
 
   GtkWidget *button_signup;
 
-  GtkWidget *entry_tk;
-  GtkWidget *entry_pass;
-  GtkWidget *entry_pass_conf;
+  // GtkWidget *entry_tk;
+  // GtkWidget *entry_pass;
+  // GtkWidget *entry_pass_conf;
+  GtkWidget *user_infor[3];
 
   gtk_init(&argc, &argv);
 
@@ -107,20 +134,20 @@ void signup(int argc, char *argv[])
   gtk_fixed_put(GTK_FIXED(fixed),label_pass_conf,10,130);
   gtk_widget_set_size_request(label_pass_conf,40,30);
 
-  entry_tk=gtk_entry_new();
-  gtk_fixed_put(GTK_FIXED(fixed),entry_tk,150,50);
-  gtk_widget_set_size_request(entry_tk,150,30);
-  entry_pass=gtk_entry_new();
-  gtk_fixed_put(GTK_FIXED(fixed),entry_pass,150,90);
-  gtk_widget_set_size_request(entry_pass,150,30);
-  entry_pass_conf=gtk_entry_new();
-  gtk_fixed_put(GTK_FIXED(fixed),entry_pass_conf,150,130);
-  gtk_widget_set_size_request(entry_pass_conf,150,30);
+  user_infor[0]=gtk_entry_new();
+  gtk_fixed_put(GTK_FIXED(fixed),user_infor[0],150,50);
+  gtk_widget_set_size_request(user_infor[0],150,30);
+  user_infor[1]=gtk_entry_new();
+  gtk_fixed_put(GTK_FIXED(fixed),user_infor[1],150,90);
+  gtk_widget_set_size_request(user_infor[1],150,30);
+  user_infor[2]=gtk_entry_new();
+  gtk_fixed_put(GTK_FIXED(fixed),user_infor[2],150,130);
+  gtk_widget_set_size_request(user_infor[2],150,30);
 
   gtk_container_add(GTK_CONTAINER(window),fixed);
   gtk_window_set_position(GTK_WINDOW(window),GTK_WIN_POS_CENTER);
-  g_signal_connect(G_OBJECT(button_signup),"clicked",G_CALLBACK(on_button_signup_clicked_tk),entry_tk);
-  g_signal_connect(G_OBJECT(button_signup),"clicked",G_CALLBACK(on_button_signup_clicked_pass),entry_pass);
+  g_signal_connect(G_OBJECT(button_signup),"clicked",G_CALLBACK(on_button_signup_clicked_tk),user_infor);
+  // g_signal_connect(G_OBJECT(button_signup),"clicked",G_CALLBACK(on_button_signup_clicked_pass),entry_pass);
   
     
 

@@ -175,7 +175,7 @@ void do_sign_up(Protocol* protocol, User** top_user, int client){
   User* u;
   u = search_user(*top_user, protocol->user_info.name);
   if (u != NULL){
-    protocol->message = FAIL_SIGIN;
+    protocol->message = FAIL_SIGUP;
     bytes_sent = send(client, protocol, sizeof(Protocol), 0);
     check_error(bytes_sent, client);
     return 0;

@@ -163,7 +163,4 @@ void main_play()
 
   gtk_main();
 
-  }
-
-
-  
+}

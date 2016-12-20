@@ -13,7 +13,7 @@
 #include "../lib/account.h"
 #include "request.h"
 
-#define PORT 5504
+#define PORT 5501
 
 int main(){
   int client_sock;
