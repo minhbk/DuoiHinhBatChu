@@ -14,7 +14,7 @@
 #include "room.h"
 /* #include "question.h" */
 
-#define PORT 5501
+#define PORT 5502
 #define BACKLOG 20
 
 
@@ -145,15 +145,19 @@ int main(){
               check_answer(protocol, list_user, list_room, clients[i]);
               puts("check xong");
             } else if (protocol->message == REQUEST_QUESTION){
-              puts("Send question");
-              if (before_show_question(protocol, list_user, list_room, clients[i])){
+              int x;
+              x = before_show_question(protocol, list_user, list_room, clients[i]);
+              if (x == 1){
                 show_question(protocol, list_user, list_room, clients[i]);
+              } else if (x==-1){
+                send_result(protocol, &list_room, list_user,clients[i]);
+                close(clients[i]);
+                FD_CLR(clients[i],&sockfds);
+                clients[i]=-1;
+              } else if (x==0){
+                not_show_question(protocol, clients[i]);
               }
-              puts("Complete send question");
             }
-            /* close(clients[i]); */
-            /* FD_CLR(clients[i],&sockfds); */
-            /* clients[i]=-1; */
             break;
         }
 

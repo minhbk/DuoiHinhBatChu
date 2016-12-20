@@ -9,9 +9,11 @@ GtkWidget *label_show_goiy;
 GtkWidget *image;
 GtkWidget *label_show_causo;
 GtkWidget *label_show_nameuser;
+GtkWidget *entry_answer;
 
 static void on_button_answer_clicked_answer(GtkWidget *widget,gpointer window)
 { 
+
   send_answer(protocol, user, client_sock, state, gtk_entry_get_text(GTK_ENTRY(window)));
   recv_result(protocol, user, client_sock);
   state = PLAYING;
@@ -54,66 +56,19 @@ static void on_button_answer_clicked_answer(GtkWidget *widget,gpointer window)
 
 
     gtk_image_set_from_file(GTK_IMAGE(image),image_name);
+  } else if (protocol->message == WIN){
+    puts("------------------");
+    puts("BAN DA THANG CUOC!");
+    puts("------------------");
+    gtk_main_quit();
+  } else if (protocol->message == LOSE){
+    puts("------------------");
+    puts("BAN DA THUA CUOC!");
+    puts("------------------");
+    gtk_main_quit();
   }
 }
 
-void on_button_answer_clicked_causo(GtkWidget *widget,gpointer window)
-{
-  static int count=1;
-    char str_count[30]={0};
-    count++;
-    sprintf(str_count,"%d",count);
-    if(count<=10)
-    gtk_label_set_text(GTK_LABEL(label_show_causo),str_count);
-}
-
-void on_button_answer_clicked_image(GtkWidget *widget,gpointer window)
-{
-  static int count=0;
-  char *img_count[10];
-  img_count[0]="picture/2.jpg";
-  img_count[1]="picture/3.jpg";
-  img_count[2]="picture/4.jpg";
-  img_count[3]="picture/5.jpg";
-  img_count[4]="picture/6.jpg";
-  img_count[5]="picture/7.jpg";
-  img_count[6]="picture/8.jpg";
-  img_count[7]="picture/9.jpg";
-  img_count[8]="picture/10.jpg";
-  gtk_image_set_from_file(GTK_IMAGE(image),img_count[count]);
-  count++;
-}
-  
-void on_button_answer_clicked_score(GtkWidget *widget, gpointer window)
-  {
-
-    
-    static int count=0;
-    char str_count[30]={0};
-    count++;
-    sprintf(str_count,"%d",count);
-    gtk_label_set_text(GTK_LABEL(label_show_score),str_count);
-  }
-void on_button_answer_clicked_goiy(GtkWidget *widget, gpointer window)
-{
- 
-    static int count=0;
-   char *str_goiy[10];
-   str_goiy[0]="H T I A A O";
-   str_goiy[1]="T T I H T A H N";
-   str_goiy[2]="C C O N H M A G";
-   str_goiy[3]="C O I G U A";
-   str_goiy[4]="B C O A A O";
-   str_goiy[5]="I O R T I H N O V T A H N";
-   str_goiy[6]="N A T M O B";
-   str_goiy[7]="O H K G N O C M A C G N O C"; 
-   str_goiy[8]="P A B O C";
-    
-  
-    gtk_label_set_text(GTK_LABEL(label_show_goiy),str_goiy[count]);
-    count++;
-    if(count==10) g_print("Ket thuc\n");
-}
 void main_play()
 {
 
@@ -153,7 +108,6 @@ void main_play()
   GtkWidget *button_cancel;
   GtkWidget *button3;
 
-  GtkWidget *entry_answer;
 
   //gtk_init(&argc, &argv);
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -193,7 +147,7 @@ void main_play()
   gtk_fixed_put(GTK_FIXED(fixed),label_score,430,80);//set cach 2 ben le
   gtk_widget_set_size_request(label_score,40,30);//set chieu dai, rong label
 
-  label_causo=gtk_label_new("Question number                       / 10");
+  label_causo=gtk_label_new("Number                       / 10");
   gtk_fixed_put(GTK_FIXED(fixed),label_causo,430,130);//set cach 2 ben le
   gtk_widget_set_size_request(label_causo,40,30);
 
@@ -222,7 +176,6 @@ void main_play()
   gtk_container_add(GTK_CONTAINER(window),fixed);
   gtk_window_set_position(GTK_WINDOW(window),GTK_WIN_POS_CENTER);
   g_signal_connect(G_OBJECT(button_answer),"clicked",G_CALLBACK(on_button_answer_clicked_answer),entry_answer);
-  g_signal_connect(G_OBJECT(button_answer),"clicked",G_CALLBACK(on_button_answer_clicked_goiy),label_show_goiy);
 
   g_signal_connect(G_OBJECT(window), "destroy",
         G_CALLBACK(gtk_main_quit), NULL);

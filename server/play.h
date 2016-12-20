@@ -6,7 +6,7 @@
 #include "../lib/protocol.h"
 
 #define SCORE_PER_QUESTION 1
-#define TOTAL_QUESTION 3
+#define TOTAL_QUESTION 10
 
 void check_file_exist(FILE *f);
 
@@ -27,4 +27,6 @@ void send_image(Protocol* protocol, User* top_user, Room* top_room, int client);
 void check_answer(Protocol* protocol, User* top_user, Room* top_room, int client);
 
 void not_show_question(Protocol* protocol, int client);
+
+void send_result(Protocol* protocol, Room** top_room, User* top_user, int client);
 #endif

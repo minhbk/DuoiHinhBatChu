@@ -81,17 +81,16 @@ int before_show_question(Protocol* protocol, User* top_user, Room* top_room, int
     return 0;
   }
 
-  if (room->question_number > TOTAL_QUESTION){
-    return 0;
-    //thong bao thang thua
-  }
-
   int number, position;
   number = room->question_number;
   position = position_in_room(room, u->name);
   if (room->user_answersed[position][number]){
-    not_show_question(protocol, client);
     return 0;
+  }
+
+  if (room->question_number > TOTAL_QUESTION){
+    //thong bao thang thua
+    return -1;
   }
 
   return 1;
@@ -330,4 +329,43 @@ void not_show_question(Protocol* protocol, int client){
   int bytes_sent;
   bytes_sent = send(client, protocol, sizeof(Protocol), 0);
   check_error(bytes_sent, client);
+}
+
+void send_result(Protocol* protocol, Room** top_room, User* top_user, int client){
+
+  User* u;
+  u = search_user(top_user, protocol->user_info.name);
+  if (u == NULL){
+    return 0;
+  }
+  if (u->state != protocol->state){
+    return 0;
+  }
+
+  Room* room;
+  room = in_room(*top_room, u->name);
+  if (room == NULL){
+    return 0;
+  }
+
+  int position;
+  position = position_in_room(room, u->name);
+
+  if (room->score[position] > room->score[!position]){
+    protocol->message = WIN;
+  } else {
+    protocol->message = LOSE;
+  }
+
+  protocol->state = CONNECTED;
+  u->state = CONNECTED;
+
+  int bytes_sent;
+  bytes_sent = send(client, protocol, sizeof(Protocol), 0);
+  check_error(bytes_sent, client);
+
+  if (room->user[0]->state == CONNECTED && room->user[1]->state == CONNECTED){
+    del_room(top_room, u->name);
+  }
+
 }

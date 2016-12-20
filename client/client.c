@@ -15,7 +15,7 @@
 
 #include "login_ui.h"
 
-#define PORT 5501
+#define PORT 5502
 
 
 int client_sock;
