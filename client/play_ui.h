@@ -10,6 +10,8 @@ GtkWidget *image;
 GtkWidget *label_show_causo;
 GtkWidget *label_show_nameuser;
 GtkWidget *entry_answer;
+GtkWidget *label_show_score_play_with;
+
 
 static void on_button_answer_clicked_answer(GtkWidget *widget,gpointer window)
 { 
@@ -26,6 +28,7 @@ static void on_button_answer_clicked_answer(GtkWidget *widget,gpointer window)
 
     char number[5];
     char score[5];
+    char competitor_score[5];
 
     sprintf(number, "%d", protocol->question.number);
     gtk_label_set_text(GTK_LABEL(label_show_causo),number);
@@ -34,6 +37,8 @@ static void on_button_answer_clicked_answer(GtkWidget *widget,gpointer window)
     sprintf(score, "%d", protocol->your_score);
     gtk_label_set_text(GTK_LABEL(label_show_score),score);
 
+    sprintf(competitor_score, "%d", protocol->competitor_score);
+    gtk_label_set_text(GTK_LABEL(label_show_score_play_with),competitor_score);
 
     gtk_label_set_text(GTK_LABEL(label_show_goiy),protocol->question.suggestion);
 
@@ -107,7 +112,7 @@ void main_play()
   GtkWidget *button_answer;
   GtkWidget *button_cancel;
   GtkWidget *button3;
-
+  GtkWidget *label_score_play_with;
 
   //gtk_init(&argc, &argv);
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -130,13 +135,13 @@ void main_play()
   gtk_fixed_put(GTK_FIXED(fixed),label_show_nameuser,150,300);
   gtk_widget_set_size_request(label_show_nameuser,80,30);
 
-  // label_score_play_with=gtk_label_new("Điểm người chơi kia");
-  // gtk_fixed_put(GTK_FIXED(fixed),label_score_play_with,430,200);
-  // gtk_widget_set_size_request(label_score_play_with,80,30);
+  label_score_play_with=gtk_label_new("Competitor score:");
+  gtk_fixed_put(GTK_FIXED(fixed),label_score_play_with,430,200);
+  gtk_widget_set_size_request(label_score_play_with,80,30);
 
-  // label_show_score_play_with=gtk_label_new("0");
-  // gtk_fixed_put(GTK_FIXED(fixed),label_show_score_play_with,580,200);
-  // gtk_widget_set_size_request(label_show_score_play_with,80,30);
+  label_show_score_play_with=gtk_label_new("0");
+  gtk_fixed_put(GTK_FIXED(fixed),label_show_score_play_with,580,200);
+  gtk_widget_set_size_request(label_show_score_play_with,80,30);
 
   button_answer=gtk_button_new_with_label("Answer: ");
   gtk_fixed_put(GTK_FIXED(fixed),button_answer,600,450);//set cach 2 ben le

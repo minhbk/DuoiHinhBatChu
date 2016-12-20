@@ -351,7 +351,7 @@ void send_result(Protocol* protocol, Room** top_room, User* top_user, int client
   int position;
   position = position_in_room(room, u->name);
 
-  if (room->score[position] > room->score[!position]){
+  if (room->score[position] >= room->score[!position]){
     protocol->message = WIN;
   } else {
     protocol->message = LOSE;
