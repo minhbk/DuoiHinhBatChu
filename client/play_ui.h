@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 #include <time.h>
 #include <unistd.h>
+#include "global_variable.h"
 
 
 GtkWidget *label_show_score;
@@ -92,6 +93,28 @@ void on_button_answer_clicked_goiy(GtkWidget *widget, gpointer window)
 void main_play()
 {
 
+  state = request_play(protocol, user, client_sock, state);
+  ready(protocol, user, client_sock, state);
+
+  recv(client_sock, protocol, sizeof(Protocol), 0);
+  char sug[30];
+  int image_size;
+  strcpy(sug, protocol->question.suggestion);
+  image_size = protocol->question.image_size;
+  state = protocol->state;
+
+  protocol->state = state;
+  protocol->message = REQUEST_IMAGE;
+  send(client_sock, protocol, sizeof(Protocol), 0);
+
+
+  char image_name[30];
+  strcpy(image_name, "question/");
+  strcat(image_name, user->name);
+  strcat(image_name, ".jpg");
+
+  recv_image(image_name, image_size, client_sock);
+
 
   GtkWidget *window;
   GtkWidget *fixed;
@@ -114,7 +137,7 @@ void main_play()
   gtk_container_set_border_width(GTK_CONTAINER(window),30);
 
   fixed=gtk_fixed_new();
-  image = gtk_image_new_from_file("picture/1.jpg");
+  image = gtk_image_new_from_file(image_name);
   gtk_fixed_put(GTK_FIXED(fixed),image,10,10);//set cach 2 ben le
   gtk_widget_set_size_request(image,300,200);// set chieu dai rong button
  

@@ -84,3 +84,23 @@ int request_sign_in(Protocol* protocol, User* user, int client_sock, int state){
     return 1;
   }
 }
+
+
+void recv_image(char* image_name, int image_size, int client_sock){
+
+  FILE *image = fopen(image_name, "wb");
+  char buff[1024];
+  int bytes_received;
+  int remain = image_size;
+  puts("Bat dau nhan");
+
+  while (remain > 0){
+    bytes_received = recv(client_sock, buff, 1024, 0);
+
+    remain = remain - bytes_received;
+
+    fwrite(buff, 1, 1024, image);
+  }
+  fclose(image);
+  puts("Xong nhan anh");
+}
